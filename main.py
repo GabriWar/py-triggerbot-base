@@ -96,7 +96,7 @@ class triggerbot:
             actual_delay = self.base_delay + self.base_delay * delay_percentage
 
             time.sleep(actual_delay)
-            if self.counterstrafe == True and any(user32.GetKeyState(k) > 1 for k in [87, 65, 83, 68]):
+            if ((self.counterstrafe == True) and (any(user32.GetKeyState(k) > 1 for k in [87, 65, 83, 68]))):
                 if is_pressed("a"):
                     block_key(30)
                     blocked.append(30)
