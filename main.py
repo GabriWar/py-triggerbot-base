@@ -84,18 +84,21 @@ class triggerbot:
             
     def adjusts(self):
         print("ADJUSTING, PRESS:")
-        print("0: ZONE -")
-        print("9: ZONE +")
-        print("8: trigger_delay -")
-        print("7: trigger_delay +")
-        print("6: TEST")
-        print("5: color_tolerance -")
-        print("4: color_tolerance +")
+        print("F12: TEST")
+        print("F10: ZONE -")
+        print("F9: ZONE +")
+        print("F8: trigger_delay -")
+        print("F7: trigger_delay +")
+        print("F6: color_tolerance -")
+        print("F5: color_tolerance +")
         print("=: START")
         loop = True
         while loop:
             time.sleep(0.2)
-            if keyboard.is_pressed("0"):
+            if keyboard.is_pressed("f12"):
+                self.triggerbot = True
+                self.searcherino()
+            if keyboard.is_pressed("f10"):
                 if self.ZONE > 1:
                     self.ZONE = self.ZONE - 1
                     self.GRAB_ZONE = (
@@ -106,7 +109,7 @@ class triggerbot:
                     print("ZONE: ", self.ZONE)
                 else:
                     print("ZONE: ", self.ZONE)
-            if keyboard.is_pressed("9"):
+            if keyboard.is_pressed("f9"):
                 self.ZONE = self.ZONE + 1
                 self.GRAB_ZONE = (
             int(WIDTH / 2 - self.ZONE),
@@ -114,19 +117,16 @@ class triggerbot:
             int(WIDTH / 2 + self.ZONE),
             int(HEIGHT / 2 + self.ZONE),)
                 print("ZONE: ", self.ZONE)
-            if keyboard.is_pressed("8"):
+            if keyboard.is_pressed("f8"):
                 self.trigger_delay = self.trigger_delay - 1
                 print("trigger_delay: ", self.trigger_delay)
-            if keyboard.is_pressed("7"):
+            if keyboard.is_pressed("f7"):
                 self.trigger_delay = self.trigger_delay + 1
                 print("trigger_delay: ", self.trigger_delay)
-            if keyboard.is_pressed("6"):
-                self.triggerbot = True
-                self.searcherino()
-            if keyboard.is_pressed("5"):
+            if keyboard.is_pressed("f6"):
                 self.color_tolerance = self.color_tolerance - 1
                 print("color_tolerance: ", self.color_tolerance)
-            if keyboard.is_pressed("4"):
+            if keyboard.is_pressed("f5"):
                 self.color_tolerance = self.color_tolerance + 1
                 print("color_tolerance: ", self.color_tolerance)
             if keyboard.is_pressed("="):
@@ -134,7 +134,7 @@ class triggerbot:
                 loop = False
 
     def toggle(self):
-        if keyboard.is_pressed("f10"):  
+        if keyboard.is_pressed("f1"):  
             with self.toggle_lock:
                 if self.triggerbot_toggle:
                     self.triggerbot = not self.triggerbot
