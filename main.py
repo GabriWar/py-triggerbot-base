@@ -4,6 +4,7 @@ import win32api
 from ctypes import WinDLL
 import numpy as np
 from mss import mss as mss_module
+import os
 
 
 def exiting():
@@ -88,18 +89,23 @@ class triggerbot:
         print("8: trigger_delay -")
         print("7: trigger_delay +")
         print("6: TEST")
+        print("5: color_tolerance -")
+        print("4: color_tolerance +")
         print("=: START")
         loop = True
         while loop:
             time.sleep(0.2)
             if keyboard.is_pressed("0"):
-                self.ZONE = self.ZONE - 1
-                self.GRAB_ZONE = (
-            int(WIDTH / 2 - self.ZONE),
-            int(HEIGHT / 2 - self.ZONE),
-            int(WIDTH / 2 + self.ZONE),
-            int(HEIGHT / 2 + self.ZONE),)
-                print("ZONE: ", self.ZONE)
+                if self.ZONE > 1:
+                    self.ZONE = self.ZONE - 1
+                    self.GRAB_ZONE = (
+                int(WIDTH / 2 - self.ZONE),
+                int(HEIGHT / 2 - self.ZONE),
+                int(WIDTH / 2 + self.ZONE),
+                int(HEIGHT / 2 + self.ZONE),)
+                    print("ZONE: ", self.ZONE)
+                else:
+                    print("ZONE: ", self.ZONE)
             if keyboard.is_pressed("9"):
                 self.ZONE = self.ZONE + 1
                 self.GRAB_ZONE = (
@@ -117,8 +123,14 @@ class triggerbot:
             if keyboard.is_pressed("6"):
                 self.triggerbot = True
                 self.searcherino()
+            if keyboard.is_pressed("5"):
+                self.color_tolerance = self.color_tolerance - 1
+                print("color_tolerance: ", self.color_tolerance)
+            if keyboard.is_pressed("4"):
+                self.color_tolerance = self.color_tolerance + 1
+                print("color_tolerance: ", self.color_tolerance)
             if keyboard.is_pressed("="):
-                print("ADJUSTED:","ZONE=", self.ZONE,"DELAY=", self.trigger_delay)
+                print("ADJUSTED:","ZONE=", self.ZONE,"DELAY=", self.trigger_delay, "COLOR_TOLERANCE=", self.color_tolerance, "STARTED")
                 loop = False
 
     def toggle(self):
@@ -130,7 +142,7 @@ class triggerbot:
                     self.triggerbot_toggle = False
                     threading.Thread(target=self.cooldown).start()
 
-            if keyboard.is_pressed("ctrl+shift+x"):  # Check for the kkkkk keybind
+            if keyboard.is_pressed("ctrl+shift+x"):  
                 self.exit_program = True
                 exiting()
         
@@ -142,7 +154,7 @@ class triggerbot:
                 self.searcherino()
             else:
                 time.sleep(0.1)
-            if keyboard.is_pressed("ctrl+shift+x"):  # Check for the exit keybind
+            if keyboard.is_pressed("ctrl+shift+x"):  
                 self.exit_program = True
                 exiting()
 
