@@ -83,15 +83,15 @@ class triggerbot:
             print("TRIGGERED", self.trigger_times,)
             
     def adjusts(self):
-        print("ADJUSTING, PRESS:")
-        print("F12: TEST")
-        print("F10: ZONE -")
-        print("F9: ZONE +")
-        print("F8: trigger_delay -")
-        print("F7: trigger_delay +")
-        print("F6: color_tolerance -")
-        print("F5: color_tolerance +")
-        print("=: START")
+        def printing(self):
+            os.system('cls')
+            print("ADJUSTING, PRESS:")
+            print("F12: TEST")
+            print("F10/F9 ZONE: ", self.ZONE)
+            print("F8/F7 DELAY: ", self.trigger_delay)
+            print("F6/F5 COLOR_TOLERANCE: ", self.color_tolerance)
+            print("=: START")
+        printing(self)
         loop = True
         while loop:
             time.sleep(0.2)
@@ -106,9 +106,9 @@ class triggerbot:
                 int(HEIGHT / 2 - self.ZONE),
                 int(WIDTH / 2 + self.ZONE),
                 int(HEIGHT / 2 + self.ZONE),)
-                    print("ZONE: ", self.ZONE)
+                    printing(self)
                 else:
-                    print("ZONE: ", self.ZONE)
+                    printing(self)
             if keyboard.is_pressed("f9"):
                 self.ZONE = self.ZONE + 1
                 self.GRAB_ZONE = (
@@ -116,21 +116,21 @@ class triggerbot:
             int(HEIGHT / 2 - self.ZONE),
             int(WIDTH / 2 + self.ZONE),
             int(HEIGHT / 2 + self.ZONE),)
-                print("ZONE: ", self.ZONE)
+                printing(self)
             if keyboard.is_pressed("f8"):
                 self.trigger_delay = self.trigger_delay - 1
-                print("trigger_delay: ", self.trigger_delay)
+                printing(self)
             if keyboard.is_pressed("f7"):
                 self.trigger_delay = self.trigger_delay + 1
-                print("trigger_delay: ", self.trigger_delay)
+                printing(self)
             if keyboard.is_pressed("f6"):
                 self.color_tolerance = self.color_tolerance - 1
-                print("color_tolerance: ", self.color_tolerance)
+                printing(self)
             if keyboard.is_pressed("f5"):
                 self.color_tolerance = self.color_tolerance + 1
-                print("color_tolerance: ", self.color_tolerance)
+                printing(self)
             if keyboard.is_pressed("="):
-                print("ADJUSTED:","ZONE=", self.ZONE,"DELAY=", self.trigger_delay, "COLOR_TOLERANCE=", self.color_tolerance, "STARTED")
+                printing(self)                
                 loop = False
 
     def toggle(self):
