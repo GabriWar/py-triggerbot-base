@@ -1,10 +1,11 @@
 # FORK INFO
 Forkei esse rep so pra adicionar umas funcionalidades bobas, como:
-## ajustes para ajustar no mapa de treino
-## configurações salvaveis
+- ajustes para ajustar no mapa de treino
+- configurações salvaveis
 # WIP 
-## refactorar umas funcoes
-## blablablabla wip
+- refactorar umas funcoes
+- adicionar binds
+- blablablabla wip
 
 blablabla, WIP
 # Fast-Valorant-Triggerbot
