@@ -90,6 +90,7 @@ class triggerbot:
             print("F10/F9 ZONE: ", self.ZONE)
             print("F8/F7 DELAY: ", self.trigger_delay)
             print("F6/F5 COLOR_TOLERANCE: ", self.color_tolerance)
+            print("F4: SAVE")
             print("=: START")
         printing(self)
         loop = True
@@ -128,6 +129,18 @@ class triggerbot:
                 printing(self)
             if keyboard.is_pressed("f5"):
                 self.color_tolerance = self.color_tolerance + 1
+                printing(self)
+                
+            if keyboard.is_pressed("f4"):
+                config = {
+                    "trigger_hotkey": hex(self.trigger_hotkey),
+                    "always_enabled": self.always_enabled,
+                    "trigger_delay": self.trigger_delay,
+                    "base_delay": self.base_delay,
+                    "color_tolerance": self.color_tolerance
+                }
+                with open('config.json', 'w') as outfile:
+                    json.dump(config, outfile)
                 printing(self)
             if keyboard.is_pressed("="):
                 printing(self)                
