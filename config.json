@@ -1,1 +1,1 @@
-{"trigger_hotkey": "0xa0", "always_enabled": false, "trigger_delay": 42, "base_delay": 0.01, "color_tolerance": 70}
+{"trigger_hotkey": "0xa0", "always_enabled": false, "trigger_delay": 42, "base_delay": 0.01, "color_tolerance": 70, "counterstrafe": false}

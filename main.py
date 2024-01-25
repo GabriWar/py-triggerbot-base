@@ -50,6 +50,7 @@ class triggerbot:
         self.triggerbot_toggle = True
         self.exit_program = False
         self.toggle_lock = threading.Lock()
+        self.counterstrafe = True
 
         with open("config.json") as json_file:
             data = json.load(json_file)
@@ -60,6 +61,7 @@ class triggerbot:
             self.trigger_delay = data["trigger_delay"]
             self.base_delay = data["base_delay"]
             self.color_tolerance = data["color_tolerance"]
+            self.counterstrafe = data["counterstrafe"]
             self.trigger_times = 0
             self.R, self.G, self.B = (250, 100, 250)  # purple
         except:
@@ -73,46 +75,8 @@ class triggerbot:
                 700, 100
             ) if self.triggerbot else kernel32.Beep(440, 75), kernel32.Beep(200, 100)
 
-    def adjusts(self):
-        def printing(self):
-            os.system("cls")
-            print("ADJUSTING, PRESS:")
-            print("F12: TEST")
-            print("F10/F9 ZONE: ", self.ZONE)
-            print("F8/F7 DELAY: ", self.trigger_delay)
-            print("F6/F5 COLOR_TOLERANCE: ", self.color_tolerance)
-            print("F4: SAVE")
-            print("=: START")
-
-        printing(self)
-        loop = True
-        while loop:
-            time.sleep(0.2)
-            if keyboard.is_pressed("f12"):
-                self.triggerbot = True
-                self.searcherino()
-            if keyboard.is_pressed("f10"):
-                if self.ZONE > 1:
-                    self.ZONE = self.ZONE - 1
-                    self.GRAB_ZONE = (
-                        int(WIDTH / 2 - self.ZONE),
-                        int(HEIGHT / 2 - self.ZONE),
-                        int(WIDTH / 2 + self.ZONE),
-                        int(HEIGHT / 2 + self.ZONE),
-                    )
-                    printing(self)
-                else:
-                    printing(self)
-            if keyboard.is_pressed("f9"):
-                self.ZONE = self.ZONE + 1
-                self.GRAB_ZONE = (
-                    int(WIDTH / 2 - self.ZONE),
-                    int(HEIGHT / 2 - self.ZONE),
-                    int(WIDTH / 2 + self.ZONE),
-                    int(HEIGHT / 2 + self.ZONE),
-                )
-
     def searcherino(self):
+        blocked, held = [], []
         img = np.array(self.sct.grab(self.GRAB_ZONE))
         pmap = np.array(img)
         pixels = pmap.reshape(-1, 4)
@@ -132,10 +96,8 @@ class triggerbot:
             actual_delay = self.base_delay + self.base_delay * delay_percentage
 
             time.sleep(actual_delay)
-            blocked, held = [], []
-            if any(user32.GetKeyState(k) > 1 for k in [87, 65, 83, 68]):
+            if self.counterstrafe == True and any(user32.GetKeyState(k) > 1 for k in [87, 65, 83, 68]):
                 if is_pressed("a"):
-                    print("a")
                     block_key(30)
                     blocked.append(30)
                     user32.keybd_event(68, 0, 0, 0)
@@ -175,7 +137,8 @@ class triggerbot:
             print("F10/F9 ZONE: ", self.ZONE)
             print("F8/F7 DELAY: ", self.trigger_delay)
             print("F6/F5 COLOR_TOLERANCE: ", self.color_tolerance)
-            print("F4: SAVE")
+            print("F4: COUNTERSTRAFE: ", self.counterstrafe)
+            print("F3: SAVE")
             print("=: START")
 
         printing(self)
@@ -218,14 +181,17 @@ class triggerbot:
             if keyboard.is_pressed("f5"):
                 self.color_tolerance = self.color_tolerance + 1
                 printing(self)
-
             if keyboard.is_pressed("f4"):
+                self.counterstrafe = not self.counterstrafe
+                printing(self)
+            if keyboard.is_pressed("f3"):
                 config = {
                     "trigger_hotkey": hex(self.trigger_hotkey),
                     "always_enabled": self.always_enabled,
                     "trigger_delay": self.trigger_delay,
                     "base_delay": self.base_delay,
                     "color_tolerance": self.color_tolerance,
+                    "counterstrafe": self.counterstrafe,
                 }
                 with open("config.json", "w") as outfile:
                     json.dump(config, outfile)
