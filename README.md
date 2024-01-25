@@ -28,7 +28,7 @@ just go into config.json and replace trigger_hotkey with any virtual key code, y
 
 
 # Preview
-[![Watch the video](https://cdn-cf-east.streamable.com/image/dizst6_first.jpg?Expires=1701277944784&Key-Pair-Id=APKAIEYUVEN4EVB2OKEQ&Signature=m7tTmO3eSM1uds8b-9OpFJm5x~2Jb0t2WfSKwFOLz0q5ofl7bGJ6ww5wBfx44~mtZxFjc9PsUeCV6JtXz5OFFCfutKuTWUQbkuqsMGVbI2bMQNsEuoYhBKig2O0MJNCnPWgpWHEpUoB3GikaHcYCvG~I-0y7p5PP2DvwgN~Px5IgZs84VPx-qyuFav8c255sm41rjg87aiRNQiObxaaBN3EKpuYFmBVB8~jb863EhJzRIPXkYJEgZRIbeBHJGEDtM-wH4gjSyuzuB4KgeX3Q0KOsOZwH6xkknwOm0SwXHnYiFzfPQRvbfV1l89XPRZu7LvXLAhD3BdFLTdh5ktr57A)](https://streamable.com/dizst6)
+![cmd](https://github.com/GabriWar/py-triggerbot-base/assets/72227489/71feee04-6839-44b4-9252-4184ba93383a)
 
 # FAQ
 Can I get banned using this?
