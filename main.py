@@ -117,7 +117,7 @@ class triggerbot:
                     blocked.append(31)
                     user32.keybd_event(87, 0, 0, 0)
                     held.append(87)
-                keyboard.press_and_release("k")
+            keyboard.press_and_release("k")
             self.trigger_times = self.trigger_times + 1
             for b in blocked:
                 unblock_key(b)
