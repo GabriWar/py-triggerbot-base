@@ -24,16 +24,16 @@ user32, kernel32, shcore = (
 shcore.SetProcessDpiAwareness(2)
 WIDTH, HEIGHT = [user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)]
 
-ZONE = 5
-GRAB_ZONE = (
-    int(WIDTH / 2 - ZONE),
-    int(HEIGHT / 2 - ZONE),
-    int(WIDTH / 2 + ZONE),
-    int(HEIGHT / 2 + ZONE),
-)
 
 class triggerbot:
     def __init__(self):
+        self.ZONE = 5
+        self.GRAB_ZONE = (
+            int(WIDTH / 2 - self.ZONE),
+            int(HEIGHT / 2 - self.ZONE),
+            int(WIDTH / 2 + self.ZONE),
+            int(HEIGHT / 2 + self.ZONE),
+        )
         self.sct = mss_module()
         self.triggerbot = False
         self.triggerbot_toggle = True
@@ -49,6 +49,7 @@ class triggerbot:
             self.trigger_delay = data["trigger_delay"]
             self.base_delay = data["base_delay"]
             self.color_tolerance = data["color_tolerance"]
+            self.trigger_times = 0
             self.R, self.G, self.B = (250, 100, 250)  # purple
         except:
             exiting()
@@ -60,9 +61,7 @@ class triggerbot:
             kernel32.Beep(440, 75), kernel32.Beep(700, 100) if self.triggerbot else kernel32.Beep(440, 75), kernel32.Beep(200, 100)
 
     def searcherino(self):
-        img = np.array(self.sct.grab(GRAB_ZONE))
-
-
+        img = np.array(self.sct.grab(self.GRAB_ZONE))
         pmap = np.array(img)
         pixels = pmap.reshape(-1, 4)
         color_mask = (
@@ -79,7 +78,48 @@ class triggerbot:
             
             time.sleep(actual_delay)
             keyboard.press_and_release("k")
-
+            self.trigger_times = self.trigger_times + 1
+            print("TRIGGERED", self.trigger_times,)
+            
+    def adjusts(self):
+        print("ADJUSTING, PRESS:")
+        print("0: ZONE -")
+        print("9: ZONE +")
+        print("8: trigger_delay -")
+        print("7: trigger_delay +")
+        print("6: TEST")
+        print("=: START")
+        loop = True
+        while loop:
+            time.sleep(0.2)
+            if keyboard.is_pressed("0"):
+                self.ZONE = self.ZONE - 1
+                self.GRAB_ZONE = (
+            int(WIDTH / 2 - self.ZONE),
+            int(HEIGHT / 2 - self.ZONE),
+            int(WIDTH / 2 + self.ZONE),
+            int(HEIGHT / 2 + self.ZONE),)
+                print("ZONE: ", self.ZONE)
+            if keyboard.is_pressed("9"):
+                self.ZONE = self.ZONE + 1
+                self.GRAB_ZONE = (
+            int(WIDTH / 2 - self.ZONE),
+            int(HEIGHT / 2 - self.ZONE),
+            int(WIDTH / 2 + self.ZONE),
+            int(HEIGHT / 2 + self.ZONE),)
+                print("ZONE: ", self.ZONE)
+            if keyboard.is_pressed("8"):
+                self.trigger_delay = self.trigger_delay - 1
+                print("trigger_delay: ", self.trigger_delay)
+            if keyboard.is_pressed("7"):
+                self.trigger_delay = self.trigger_delay + 1
+                print("trigger_delay: ", self.trigger_delay)
+            if keyboard.is_pressed("6"):
+                self.triggerbot = True
+                self.searcherino()
+            if keyboard.is_pressed("="):
+                print("ADJUSTED:","ZONE=", self.ZONE,"DELAY=", self.trigger_delay)
+                loop = False
 
     def toggle(self):
         if keyboard.is_pressed("f10"):  
@@ -95,6 +135,7 @@ class triggerbot:
                 exiting()
         
     def hold(self):
+        print("LOOPING")
         while True:
             while win32api.GetAsyncKeyState(self.trigger_hotkey) < 0:
                 self.triggerbot = True
@@ -107,6 +148,7 @@ class triggerbot:
 
     def starterino(self):
         while not self.exit_program:  # Keep running until the exit_program flag is True
+            self.adjusts()
             if self.always_enabled == True:
                 self.toggle()
                 self.searcherino() if self.triggerbot else time.sleep(0.1)

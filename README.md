@@ -1,3 +1,5 @@
+# FORK INFO
+Forkei esse rep so pra adicionar umas funcionalidades bobas, como uma tela de ajustes pra voce ajustar no treino, blablabla, WIP
 # Fast-Valorant-Triggerbot
 By far the fastest available python triggerbot out there, no joke its speed is pretty crazy.
 
