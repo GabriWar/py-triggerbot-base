@@ -7,7 +7,6 @@ Forkei esse rep so pra adicionar umas funcionalidades bobas, como:
 - adicionar binds
 - blablablabla wip
 
-blablabla, WIP
 # Fast-Valorant-Triggerbot
 By far the fastest available python triggerbot out there, no joke its speed is pretty crazy.
 
