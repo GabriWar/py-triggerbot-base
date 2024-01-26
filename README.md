@@ -28,7 +28,7 @@ just go into config.json and replace trigger_hotkey with any virtual key code, y
 
 
 # Preview
-![cmd](https://github.com/GabriWar/py-triggerbot-base/assets/72227489/71feee04-6839-44b4-9252-4184ba93383a)
+![cmd](https://github.com/GabriWar/py-triggerbot-base/assets/72227489/d1b8c3e3-3b6c-4b6f-a9ee-769742357b6b)
 
 # FAQ
 Can I get banned using this?
