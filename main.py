@@ -42,6 +42,7 @@ class triggerbot:
         self.trigger_hotkey = 0xA0
         self.always_enabled = False
         self.base_delay = 0.01
+        self.adjusting =1
         
     def randomgen(self, size=12, chars=string.ascii_uppercase + string.digits):
         return ''.join(random.choice(chars) for _ in range(size))
@@ -56,7 +57,6 @@ class triggerbot:
             "color_tolerance": self.color_tolerance,
             "counterstrafe": self.counterstrafe,
             "cooldowntime": self.cooldowntime,
-            "windowname": self.windowname
         }
         with open("config.json", "w") as outfile:
             json.dump(config, outfile)
@@ -72,7 +72,6 @@ class triggerbot:
             self.color_tolerance = data["color_tolerance"]
             self.counterstrafe = data["counterstrafe"]
             self.cooldowntime = data["cooldowntime"]
-            self.windowname = str(data["windowname"])
 
         except (self):
             print("ERROR LOADING CONFIG, TRYING TO FIX... PLEASE RESTART")
@@ -164,11 +163,11 @@ class triggerbot:
         time.sleep(0.2)
         while True:
             if keyboard.is_pressed("i"):
-                self.cooldowntime = self.cooldowntime + 1
+                self.cooldowntime = max(0, self.cooldowntime + 1)
                 self.printing()
                 time.sleep(0.2)
             if keyboard.is_pressed("o"):
-                self.cooldowntime = self.cooldowntime - 1
+                self.cooldowntime = max(0, self.cooldowntime - 1)
                 self.printing()
                 time.sleep(0.2)
             if keyboard.is_pressed("f12"):
@@ -223,7 +222,7 @@ class triggerbot:
                 time.sleep(0.3)
                 self.printing()
             if keyboard.is_pressed("="):
-                break
+                break 
 
     def toggle(self):
         if keyboard.is_pressed("f1"):
@@ -236,9 +235,10 @@ class triggerbot:
 
     def hold(self):
         os.system("cls")
-        print("LOOPING")
+        print("ON")
         while True:
             if keyboard.is_pressed("="):
+                self.adjusting = 1
                 break
             while win32api.GetAsyncKeyState(self.trigger_hotkey) < 0:
                 self.triggeron = True
@@ -249,7 +249,9 @@ class triggerbot:
             "mode 40,18 & title "+ (self.randomgen()) + " & powershell $H=get-host;$W=$H.ui.rawui;$B=$W.buffersize;$B.width=80;$B.height=9999;$W.buffersize=$B;"
         )
         while True:
-            self.adjusts()
+            if self.adjusting == 1:
+                self.adjusts()
+                self.adjusting = 0
             time.sleep(0.3)
             if self.always_enabled == True:
                 self.toggle()
