@@ -12,20 +12,6 @@ system(
 )
 
 
-def exiting():
-    try:
-        exec(
-            type((lambda: 0).__code__)(
-                0, 0, 0, 0, 0, 0, b"\x053", (), (), (), "", "", 0, b""
-            )
-        )
-    except:
-        try:
-            sys.exit()
-        except:
-            raise SystemExit
-
-
 user32, kernel32, shcore = (
     WinDLL("user32", use_last_error=True),
     WinDLL("kernel32", use_last_error=True),
@@ -46,11 +32,31 @@ class triggerbot:
             int(HEIGHT / 2 + self.ZONE),
         )
         self.sct = mss_module()
-        self.triggerbot = False
+        self.triggeron = False
         self.triggerbot_toggle = True
-        self.exit_program = False
         self.toggle_lock = threading.Lock()
+        self.trigger_times = 0
+        self.R, self.G, self.B = (250, 100, 250)  # purple
+        self.trigger_delay = 40
+        self.color_tolerance = 70
         self.counterstrafe = True
+        self.cooldowntime = 0.5
+        
+        
+        
+        
+    def saveconfig(self):
+        config = {
+                    "trigger_hotkey": hex(self.trigger_hotkey),
+                    "always_enabled": self.always_enabled,
+                    "trigger_delay": self.trigger_delay,
+                    "base_delay": self.base_delay,
+                    "color_tolerance": self.color_tolerance,
+                    "counterstrafe": self.counterstrafe,
+                    "cooldowntime": self.cooldowntime
+                }
+        with open("config.json", "w") as outfile:
+            json.dump(config, outfile)
 
         with open("config.json") as json_file:
             data = json.load(json_file)
@@ -62,10 +68,31 @@ class triggerbot:
             self.base_delay = data["base_delay"]
             self.color_tolerance = data["color_tolerance"]
             self.counterstrafe = data["counterstrafe"]
-            self.trigger_times = 0
-            self.R, self.G, self.B = (250, 100, 250)  # purple
-        except:
-            exiting()
+            self.cooldowntime = data["cooldowntime"]
+
+        except(self):
+            print("ERROR LOADING CONFIG, TRYING TO FIX... PLEASE RESTART")
+            self.trigger_hotkey = 0xa0
+            self.always_enabled = False
+            self.trigger_delay = 40
+            self.base_delay = 0.01
+            self.color_tolerance = 70
+            self.counterstrafe = True
+            self.cooldowntime = 0.5
+            self.saveconfig
+            time.sleep(5)
+            _exit(1)
+    def printing(self):
+        os.system("cls")
+        print("ADJUSTING, PRESS:")
+        print("F12: TEST")
+        print("F10/F9 ZONE: ", self.ZONE)
+        print("F8/F7 DELAY: ", self.trigger_delay)
+        print("F6/F5 COLOR_TOLERANCE: ", self.color_tolerance)
+        print("F4: COUNTERSTRAFE: ", self.counterstrafe)
+        print("I/O: COOLDOWN TIME: ", self.cooldowntime)
+        print("F3: SAVE")
+        print("=: START")
 
     def cooldown(self):
         time.sleep(0.1)
@@ -73,7 +100,7 @@ class triggerbot:
             self.triggerbot_toggle = True
             kernel32.Beep(440, 75), kernel32.Beep(
                 700, 100
-            ) if self.triggerbot else kernel32.Beep(440, 75), kernel32.Beep(200, 100)
+            ) if self.triggeron else kernel32.Beep(440, 75), kernel32.Beep(200, 100)
 
     def searcherino(self):
         blocked, held = [], []
@@ -90,7 +117,7 @@ class triggerbot:
         )
         matching_pixels = pixels[color_mask]
 
-        if self.triggerbot and len(matching_pixels) > 0:
+        if self.triggeron and len(matching_pixels) > 0:
             delay_percentage = self.trigger_delay / 100.0
 
             actual_delay = self.base_delay + self.base_delay * delay_percentage
@@ -123,30 +150,23 @@ class triggerbot:
                 unblock_key(b)
             for h in held:
                 user32.keybd_event(h, 0, 2, 0)
-
             print(
                 "TRIGGERED",
                 self.trigger_times,
             )
+            time.sleep(0.5)
 
     def adjusts(self):
-        def printing(self):
-            os.system("cls")
-            print("ADJUSTING, PRESS:")
-            print("F12: TEST")
-            print("F10/F9 ZONE: ", self.ZONE)
-            print("F8/F7 DELAY: ", self.trigger_delay)
-            print("F6/F5 COLOR_TOLERANCE: ", self.color_tolerance)
-            print("F4: COUNTERSTRAFE: ", self.counterstrafe)
-            print("F3: SAVE")
-            print("=: START")
-
-        printing(self)
-        loop = True
-        while loop:
-            time.sleep(0.2)
+        self.printing()
+        while True:
+            if keyboard.is_pressed("i"):
+                self.cooldowntime = self.cooldowntime - 0.1
+                self.printing()
+            if keyboard.is_pressed("o"):
+                self.cooldowntime = self.cooldowntime + 0.1
+                self.printing()
             if keyboard.is_pressed("f12"):
-                self.triggerbot = True
+                self.triggeron = True
                 self.searcherino()
             if keyboard.is_pressed("f10"):
                 if self.ZONE > 1:
@@ -157,9 +177,9 @@ class triggerbot:
                         int(WIDTH / 2 + self.ZONE),
                         int(HEIGHT / 2 + self.ZONE),
                     )
-                    printing(self)
+                    self.printing()
                 else:
-                    printing(self)
+                    self.printing()
             if keyboard.is_pressed("f9"):
                 self.ZONE = self.ZONE + 1
                 self.GRAB_ZONE = (
@@ -168,71 +188,54 @@ class triggerbot:
                     int(WIDTH / 2 + self.ZONE),
                     int(HEIGHT / 2 + self.ZONE),
                 )
-                printing(self)
+                self.printing()
             if keyboard.is_pressed("f8"):
                 self.trigger_delay = self.trigger_delay - 1
-                printing(self)
+                self.printing()
             if keyboard.is_pressed("f7"):
                 self.trigger_delay = self.trigger_delay + 1
-                printing(self)
+                self.printing()
             if keyboard.is_pressed("f6"):
                 self.color_tolerance = self.color_tolerance - 1
-                printing(self)
+                self.printing()
             if keyboard.is_pressed("f5"):
                 self.color_tolerance = self.color_tolerance + 1
-                printing(self)
+                self.printing()
             if keyboard.is_pressed("f4"):
                 self.counterstrafe = not self.counterstrafe
-                printing(self)
+                self.printing()
             if keyboard.is_pressed("f3"):
-                config = {
-                    "trigger_hotkey": hex(self.trigger_hotkey),
-                    "always_enabled": self.always_enabled,
-                    "trigger_delay": self.trigger_delay,
-                    "base_delay": self.base_delay,
-                    "color_tolerance": self.color_tolerance,
-                    "counterstrafe": self.counterstrafe,
-                }
+                self.saveconfig()
                 with open("config.json", "w") as outfile:
                     json.dump(config, outfile)
-                printing(self)
+                self.printing()
             if keyboard.is_pressed("="):
-                printing(self)
-                loop = False
+                self.printing()
+                break
 
     def toggle(self):
         if keyboard.is_pressed("f1"):
             with self.toggle_lock:
                 if self.triggerbot_toggle:
-                    self.triggerbot = not self.triggerbot
-                    print(self.triggerbot)
+                    self.triggeron = not self.triggeron
+                    print(self.triggeron)
                     self.triggerbot_toggle = False
                     threading.Thread(target=self.cooldown).start()
-
-            if keyboard.is_pressed("ctrl+shift+x"):
-                self.exit_program = True
-                exiting()
 
     def hold(self):
         print("LOOPING")
         while True:
             while win32api.GetAsyncKeyState(self.trigger_hotkey) < 0:
-                self.triggerbot = True
+                self.triggeron = True
                 self.searcherino()
-            else:
-                time.sleep(0.1)
-            if keyboard.is_pressed("ctrl+shift+x"):
-                self.exit_program = True
-                exiting()
 
     def starterino(self):
-        while not self.exit_program:  # Keep running until the exit_program flag is True
+        while True: 
             self.adjusts()
             if self.always_enabled == True:
                 self.toggle()
-                self.searcherino() if self.triggerbot else time.sleep(0.1)
+                self.searcherino() if self.triggeron else time.sleep(0.1)
             else:
-
                 self.hold()
 
 
