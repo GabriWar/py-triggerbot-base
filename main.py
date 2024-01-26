@@ -6,10 +6,8 @@ import numpy as np
 from mss import mss as mss_module
 import os
 from keyboard import is_pressed, block_key, unblock_key
-
-system(
-    "mode 40,18 & title :) & powershell $H=get-host;$W=$H.ui.rawui;$B=$W.buffersize;$B.width=80;$B.height=9999;$W.buffersize=$B;"
-)
+import random
+import string
 
 
 user32, kernel32, shcore = (
@@ -44,6 +42,10 @@ class triggerbot:
         self.trigger_hotkey = 0xA0
         self.always_enabled = False
         self.base_delay = 0.01
+        
+    def randomgen(self, size=12, chars=string.ascii_uppercase + string.digits):
+        return ''.join(random.choice(chars) for _ in range(size))
+
 
     def saveconfig(self):
         config = {
@@ -54,6 +56,7 @@ class triggerbot:
             "color_tolerance": self.color_tolerance,
             "counterstrafe": self.counterstrafe,
             "cooldowntime": self.cooldowntime,
+            "windowname": self.windowname
         }
         with open("config.json", "w") as outfile:
             json.dump(config, outfile)
@@ -69,16 +72,10 @@ class triggerbot:
             self.color_tolerance = data["color_tolerance"]
             self.counterstrafe = data["counterstrafe"]
             self.cooldowntime = data["cooldowntime"]
+            self.windowname = str(data["windowname"])
 
         except (self):
             print("ERROR LOADING CONFIG, TRYING TO FIX... PLEASE RESTART")
-            self.trigger_hotkey = 0xA0
-            self.always_enabled = False
-            self.trigger_delay = 40
-            self.base_delay = 0.01
-            self.color_tolerance = 70
-            self.counterstrafe = True
-            self.cooldowntime = 5
             self.saveconfig
             time.sleep(5)
             _exit(1)
@@ -89,8 +86,11 @@ class triggerbot:
         print("\033[93mF12\033[0m: TEST")
         print("\033[92mF10\033[0m/\033[91mF9\033[0m ZONE: ", self.ZONE)
         print("\033[92mF8\033[0m/\033[91mF7\033[0m DELAY: ", self.trigger_delay)
-        print("\033[92mF6\033[0m/\033[91mF5\033[0m COLOR_TOLERANCE: ", self.color_tolerance)
-        print("\033[92mF4\033[0m COUNTERSTRAFE: ", self.counterstrafe)
+        print("\033[92mF6\033[0m/\033[91mF5\033[0m COLOR TOLERANCE: ", self.color_tolerance)
+        if self.counterstrafe:
+            print("\033[92mF4\033[0m COUNTERSTRAFE: ", "\033[92mYes\033[0m")
+        else:
+            print("\033[91mF4\033[0m COUNTERSTRAFE: ", "\033[91mNo\033[0m")
         print("\033[92mI\033[0m/\033[91mO\033[0m COOLDOWN TIME: ", self.cooldowntime)
         print("\033[93mF3\033[0m: SAVE")
         print("\033[94m=\033[0m: TO START/ADJUST")
@@ -161,15 +161,16 @@ class triggerbot:
 
     def adjusts(self):
         self.printing()
+        time.sleep(0.2)
         while True:
             if keyboard.is_pressed("i"):
                 self.cooldowntime = self.cooldowntime + 1
                 self.printing()
-                time.sleep(0.3)
+                time.sleep(0.2)
             if keyboard.is_pressed("o"):
                 self.cooldowntime = self.cooldowntime - 1
                 self.printing()
-                time.sleep(0.3)
+                time.sleep(0.2)
             if keyboard.is_pressed("f12"):
                 self.triggeron = True
                 self.searcherino()
@@ -183,7 +184,7 @@ class triggerbot:
                         int(HEIGHT / 2 + self.ZONE),
                     )
                     self.printing()
-                    time.sleep(0.3)
+                    time.sleep(0.2)
                 else:
                     self.printing()
             if keyboard.is_pressed("f9"):
@@ -195,32 +196,33 @@ class triggerbot:
                     int(HEIGHT / 2 + self.ZONE),
                 )
                 self.printing()
-                time.sleep(0.3)
+                time.sleep(0.2)
             if keyboard.is_pressed("f8"):
                 self.trigger_delay = self.trigger_delay + 1
                 self.printing()
-                time.sleep(0.3)
+                time.sleep(0.2)
             if keyboard.is_pressed("f7"):
                 self.trigger_delay = self.trigger_delay - 1
                 self.printing()
-                time.sleep(0.3)
+                time.sleep(0.2)
             if keyboard.is_pressed("f6"):
                 self.color_tolerance = self.color_tolerance + 1
                 self.printing()
-                time.sleep(0.3)
+                time.sleep(0.2)
             if keyboard.is_pressed("f5"):
                 self.color_tolerance = self.color_tolerance - 1
                 self.printing()
-                time.sleep(0.3)
+                time.sleep(0.2)
             if keyboard.is_pressed("f4"):
                 self.counterstrafe = not self.counterstrafe
                 self.printing()
-                time.sleep(0.3)
+                time.sleep(0.2)
             if keyboard.is_pressed("f3"):
                 self.saveconfig()
+                print("SAVED")
+                time.sleep(0.3)
                 self.printing()
             if keyboard.is_pressed("="):
-                self.printing()
                 break
 
     def toggle(self):
@@ -233,6 +235,7 @@ class triggerbot:
                     threading.Thread(target=self.cooldown).start()
 
     def hold(self):
+        os.system("cls")
         print("LOOPING")
         while True:
             if keyboard.is_pressed("="):
@@ -242,8 +245,12 @@ class triggerbot:
                 self.searcherino()
 
     def starterino(self):
+        system(
+            "mode 40,18 & title "+ (self.randomgen()) + " & powershell $H=get-host;$W=$H.ui.rawui;$B=$W.buffersize;$B.width=80;$B.height=9999;$W.buffersize=$B;"
+        )
         while True:
             self.adjusts()
+            time.sleep(0.3)
             if self.always_enabled == True:
                 self.toggle()
                 self.searcherino() if self.triggeron else time.sleep(0.1)
