@@ -40,8 +40,10 @@ class triggerbot:
         self.trigger_delay = 40
         self.color_tolerance = 70
         self.counterstrafe = True
-        self.cooldowntime = 0.5
-        
+        self.cooldowntime = 5
+        self.trigger_hotkey = 0xa0
+        self.always_enabled = False
+        self.base_delay = 0.01
         
         
         
@@ -78,7 +80,7 @@ class triggerbot:
             self.base_delay = 0.01
             self.color_tolerance = 70
             self.counterstrafe = True
-            self.cooldowntime = 0.5
+            self.cooldowntime = 5
             self.saveconfig
             time.sleep(5)
             _exit(1)
@@ -154,16 +156,16 @@ class triggerbot:
                 "TRIGGERED",
                 self.trigger_times,
             )
-            time.sleep(0.5)
+            time.sleep(self.cooldowntime/10)
 
     def adjusts(self):
         self.printing()
         while True:
             if keyboard.is_pressed("i"):
-                self.cooldowntime = self.cooldowntime - 0.1
+                self.cooldowntime = self.cooldowntime - 1
                 self.printing()
             if keyboard.is_pressed("o"):
-                self.cooldowntime = self.cooldowntime + 0.1
+                self.cooldowntime = self.cooldowntime + 1
                 self.printing()
             if keyboard.is_pressed("f12"):
                 self.triggeron = True
@@ -206,8 +208,6 @@ class triggerbot:
                 self.printing()
             if keyboard.is_pressed("f3"):
                 self.saveconfig()
-                with open("config.json", "w") as outfile:
-                    json.dump(config, outfile)
                 self.printing()
             if keyboard.is_pressed("="):
                 self.printing()
