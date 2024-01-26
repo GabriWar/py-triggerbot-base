@@ -86,14 +86,14 @@ class triggerbot:
     def printing(self):
         os.system("cls")
         print("ADJUSTING, PRESS:")
-        print("F12: TEST")
-        print("F10/F9 ZONE: ", self.ZONE)
-        print("F8/F7 DELAY: ", self.trigger_delay)
-        print("F6/F5 COLOR_TOLERANCE: ", self.color_tolerance)
-        print("F4: COUNTERSTRAFE: ", self.counterstrafe)
-        print("I/O: COOLDOWN TIME: ", self.cooldowntime)
-        print("F3: SAVE")
-        print("=: START")
+        print("\033[93mF12\033[0m: TEST")
+        print("\033[92mF10\033[0m/\033[91mF9\033[0m ZONE: ", self.ZONE)
+        print("\033[92mF8\033[0m/\033[91mF7\033[0m DELAY: ", self.trigger_delay)
+        print("\033[92mF6\033[0m/\033[91mF5\033[0m COLOR_TOLERANCE: ", self.color_tolerance)
+        print("\033[92mF4\033[0m COUNTERSTRAFE: ", self.counterstrafe)
+        print("\033[92mI\033[0m/\033[91mO\033[0m COOLDOWN TIME: ", self.cooldowntime)
+        print("\033[93mF3\033[0m: SAVE")
+        print("\033[94m=\033[0m: TO START/ADJUST")
 
     def cooldown(self):
         time.sleep(0.1)
@@ -163,17 +163,19 @@ class triggerbot:
         self.printing()
         while True:
             if keyboard.is_pressed("i"):
-                self.cooldowntime = self.cooldowntime - 1
-                self.printing()
-            if keyboard.is_pressed("o"):
                 self.cooldowntime = self.cooldowntime + 1
                 self.printing()
+                time.sleep(0.3)
+            if keyboard.is_pressed("o"):
+                self.cooldowntime = self.cooldowntime - 1
+                self.printing()
+                time.sleep(0.3)
             if keyboard.is_pressed("f12"):
                 self.triggeron = True
                 self.searcherino()
             if keyboard.is_pressed("f10"):
                 if self.ZONE > 1:
-                    self.ZONE = self.ZONE - 1
+                    self.ZONE = self.ZONE + 1
                     self.GRAB_ZONE = (
                         int(WIDTH / 2 - self.ZONE),
                         int(HEIGHT / 2 - self.ZONE),
@@ -181,10 +183,11 @@ class triggerbot:
                         int(HEIGHT / 2 + self.ZONE),
                     )
                     self.printing()
+                    time.sleep(0.3)
                 else:
                     self.printing()
             if keyboard.is_pressed("f9"):
-                self.ZONE = self.ZONE + 1
+                self.ZONE = self.ZONE - 1
                 self.GRAB_ZONE = (
                     int(WIDTH / 2 - self.ZONE),
                     int(HEIGHT / 2 - self.ZONE),
@@ -192,21 +195,27 @@ class triggerbot:
                     int(HEIGHT / 2 + self.ZONE),
                 )
                 self.printing()
+                time.sleep(0.3)
             if keyboard.is_pressed("f8"):
-                self.trigger_delay = self.trigger_delay - 1
-                self.printing()
-            if keyboard.is_pressed("f7"):
                 self.trigger_delay = self.trigger_delay + 1
                 self.printing()
-            if keyboard.is_pressed("f6"):
-                self.color_tolerance = self.color_tolerance - 1
+                time.sleep(0.3)
+            if keyboard.is_pressed("f7"):
+                self.trigger_delay = self.trigger_delay - 1
                 self.printing()
-            if keyboard.is_pressed("f5"):
+                time.sleep(0.3)
+            if keyboard.is_pressed("f6"):
                 self.color_tolerance = self.color_tolerance + 1
                 self.printing()
+                time.sleep(0.3)
+            if keyboard.is_pressed("f5"):
+                self.color_tolerance = self.color_tolerance - 1
+                self.printing()
+                time.sleep(0.3)
             if keyboard.is_pressed("f4"):
                 self.counterstrafe = not self.counterstrafe
                 self.printing()
+                time.sleep(0.3)
             if keyboard.is_pressed("f3"):
                 self.saveconfig()
                 self.printing()
@@ -226,6 +235,8 @@ class triggerbot:
     def hold(self):
         print("LOOPING")
         while True:
+            if keyboard.is_pressed("="):
+                break
             while win32api.GetAsyncKeyState(self.trigger_hotkey) < 0:
                 self.triggeron = True
                 self.searcherino()
