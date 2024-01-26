@@ -246,7 +246,7 @@ class triggerbot:
 
     def starterino(self):
         system(
-            "mode 40,18 & title "+ (self.randomgen()) + " & powershell $H=get-host;$W=$H.ui.rawui;$B=$W.buffersize;$B.width=80;$B.height=9999;$W.buffersize=$B;"
+            "mode 40,18 & title "+ (self.randomgen()) + " & powershell $H=get-host;$W=$H.ui.rawui;$B=$W.buffersize;$W.buffersize=$B;"
         )
         while True:
             if self.adjusting == 1:
