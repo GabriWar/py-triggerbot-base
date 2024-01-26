@@ -41,22 +41,20 @@ class triggerbot:
         self.color_tolerance = 70
         self.counterstrafe = True
         self.cooldowntime = 5
-        self.trigger_hotkey = 0xa0
+        self.trigger_hotkey = 0xA0
         self.always_enabled = False
         self.base_delay = 0.01
-        
-        
-        
+
     def saveconfig(self):
         config = {
-                    "trigger_hotkey": hex(self.trigger_hotkey),
-                    "always_enabled": self.always_enabled,
-                    "trigger_delay": self.trigger_delay,
-                    "base_delay": self.base_delay,
-                    "color_tolerance": self.color_tolerance,
-                    "counterstrafe": self.counterstrafe,
-                    "cooldowntime": self.cooldowntime
-                }
+            "trigger_hotkey": hex(self.trigger_hotkey),
+            "always_enabled": self.always_enabled,
+            "trigger_delay": self.trigger_delay,
+            "base_delay": self.base_delay,
+            "color_tolerance": self.color_tolerance,
+            "counterstrafe": self.counterstrafe,
+            "cooldowntime": self.cooldowntime,
+        }
         with open("config.json", "w") as outfile:
             json.dump(config, outfile)
 
@@ -72,9 +70,9 @@ class triggerbot:
             self.counterstrafe = data["counterstrafe"]
             self.cooldowntime = data["cooldowntime"]
 
-        except(self):
+        except (self):
             print("ERROR LOADING CONFIG, TRYING TO FIX... PLEASE RESTART")
-            self.trigger_hotkey = 0xa0
+            self.trigger_hotkey = 0xA0
             self.always_enabled = False
             self.trigger_delay = 40
             self.base_delay = 0.01
@@ -84,6 +82,7 @@ class triggerbot:
             self.saveconfig
             time.sleep(5)
             _exit(1)
+
     def printing(self):
         os.system("cls")
         print("ADJUSTING, PRESS:")
@@ -125,7 +124,9 @@ class triggerbot:
             actual_delay = self.base_delay + self.base_delay * delay_percentage
 
             time.sleep(actual_delay)
-            if ((self.counterstrafe == True) and (any(user32.GetKeyState(k) > 1 for k in [87, 65, 83, 68]))):
+            if (self.counterstrafe == True) and (
+                any(user32.GetKeyState(k) > 1 for k in [87, 65, 83, 68])
+            ):
                 if is_pressed("a"):
                     block_key(30)
                     blocked.append(30)
@@ -156,7 +157,7 @@ class triggerbot:
                 "TRIGGERED",
                 self.trigger_times,
             )
-            time.sleep(self.cooldowntime/10)
+            time.sleep(self.cooldowntime / 10)
 
     def adjusts(self):
         self.printing()
@@ -230,7 +231,7 @@ class triggerbot:
                 self.searcherino()
 
     def starterino(self):
-        while True: 
+        while True:
             self.adjusts()
             if self.always_enabled == True:
                 self.toggle()
